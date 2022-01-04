@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# debian-sources-list-gen
+# version 1.0
+#
+# ----------------------------------------------------------------------------
+#  "THE BEER-WARE LICENSE" (Revision 42):
+#  <nany@forum.ubuntu-fr.org> wrote this file. As long as you retain this
+#  notice you can do whatever you want with this stuff. If we meet some day,
+#  and you think this stuff is worth it, you can buy me a beer in return. nany
+# ----------------------------------------------------------------------------
+# 
+# ----------------------------------------------------------------------------
+#  "LICENCE BEERWARE" (Révision 42) :
+#  <nany@forum.ubuntu-fr.org> a créé ce fichier. Tant que vous conservez cet
+#  avertissement, vous pouvez faire ce que vous voulez de ce truc. Si on se
+#  rencontre un jour et que vous pensez que ce truc vaut le coup, vous pouvez
+#  me payer une bière en retour. nany
+# ----------------------------------------------------------------------------
+#
+
+### variables ###
+url="https://raw.githubusercontent.com/canonical/cloud-init/main/\
+templates/sources.list.debian.tmpl"
+lang=$(grep -oP '[a-z][a-z](?=_.*)' ~/.config/user-dirs.locale)
+path="$(dirname $0)/"
+if test -s ${path}end-$lang.txt ; then
+  directives="$(cat ${path}end-$lang.txt)"
+else
+  directives="$(cat ${path}end-en.txt)"
+fi
+mirror="http://deb.debian.org/debian/"
+codename=$(lsb_release -sc)
+security="http://security.debian.org/"
+if test "$codename" == "buster" -o "$codename" == "stretch" ; then
+  sec="/updates"
+else
+  sec="-security"
+mi="/media/cdrom/.disk/info"
+cdrom=$(test -s "$mi" && awk -F'[ _]' '{gsub("\"","_",$0);
+  print "# deb cdrom:["$0"]/",tolower($4),"main restricted"}' "$mi")
+###
+
+### main ###
+wget -qO- "$url" \
+  | sed "1,9d;
+    s#{{mirror}}#$mirror#;
+    s#{{codename}}#$codename#;
+    s#{{security}}#$security#;
+    s#{% if.*endif %}#$sec#
+    s#main#main contrib non-free#;
+    s#deb-src#\# deb-src#" > ~/sources.list
+
+if test -n "$cdrom" ; then
+  sed -i "1i\\$cdrom" ~/sources.list
+fi
+
+echo "file:$HOME/sources.list $directives"
+echo "sudo cp -v ~/sources.list /etc/apt/"
+###
