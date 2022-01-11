@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # debian-sources-list-gen
-# version 1.0
+# version 1.1
 #
 # ----------------------------------------------------------------------------
 #  "THE BEER-WARE LICENSE" (Revision 42):
@@ -36,6 +36,7 @@ if test "$codename" == "buster" -o "$codename" == "stretch" ; then
   sec="/updates"
 else
   sec="-security"
+fi
 mi="/media/cdrom/.disk/info"
 cdrom=$(test -s "$mi" && awk -F'[ _]' '{gsub("\"","_",$0);
   print "# deb cdrom:["$0"]/",tolower($4),"main restricted"}' "$mi")
