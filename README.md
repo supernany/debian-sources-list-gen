@@ -14,7 +14,7 @@ cd debian-sources-list-gen
 ```
 If you can’t get git, run:
 ```
-wget -c https://github.com/supernany/debian-sources-list-gen/archive/refs/tags/debian-sources-list-gen.tar.gz
+wget -c https://github.com/supernany/debian-sources-list-gen/archive/refs/tags/1.1.tar.gz
 ```
 ```
 tar -xzf debian-sources-list-gen.tar.gz
