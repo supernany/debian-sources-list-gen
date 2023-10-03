@@ -31,7 +31,7 @@ else
 fi
 mirror="http://deb.debian.org/debian/"
 codename=$(lsb_release -sc)
-security="http://security.debian.org/"
+security="http://security.debian.org/debian"
 if test "$codename" == "buster" -o "$codename" == "stretch" ; then
   sec="/updates"
 else
